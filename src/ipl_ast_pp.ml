@@ -104,7 +104,7 @@ and statement_list_pp ppf lst =
   CCFormat.( list ~sep:(return "@,") statement_pp ppf lst)
 
 let field_pp ppf (x : field) =
-  fprintf ppf "%s : %a" x.name typedecl_pp x.ftype 
+  fprintf ppf "%s %s: %a" x.name (match x.tag with | None -> "" | Some tag -> "\""^tag^"\"") typedecl_pp x.ftype 
 
 let field_list_pp ppf ( x : field list ) =
   CCFormat.(list ~sep:(return "@,") field_pp) ppf x
