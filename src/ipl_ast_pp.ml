@@ -164,6 +164,10 @@ let require_list_pp ppf requires =
 
 let model_statement_pp ppf =
   function
+  | Library s -> 
+    fprintf ppf "Library %s\n" s
+  | Import s -> 
+    fprintf ppf "Import %s\n" s
   | TypeAlias { name ; atype } ->
     fprintf ppf "alias %s: %a" name typedecl_pp atype 
   | Action { name ; fields ; validators } ->

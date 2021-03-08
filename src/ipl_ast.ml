@@ -91,6 +91,8 @@ type require = {
 }
 
 type model_statement =
+  | Library         of string
+  | Import          of string
   | TypeAlias       of { name : string ; atype  : typedecl }
   | Action          of { name : string ; fields : field list ; validators : expr list }
   | Record          of { name : string ; repeating: bool; fields : field list  } 
