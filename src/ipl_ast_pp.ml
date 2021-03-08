@@ -125,8 +125,12 @@ let validator_pp ppf x =
 let validator_list_pp ppf x =
   CCFormat.(list ~sep:(return "@,") validator_pp) ppf x
 
-let case_list_pp ppf (x : string list) =
-  CCFormat.(list ~sep:(return "@,") (fun fmt x -> fprintf fmt "%s \"%s\"" x x)) ppf x
+let case_list_pp ppf (x : (string * string option) list) =
+  CCFormat.(list ~sep:(return "@,") 
+              (fun fmt ((n,tg):string * string option) -> 
+                 match tg with 
+                 | None -> fprintf fmt "%s" n
+                 | Some tg -> fprintf fmt "%s \"%s\"" n tg)) ppf x
 
 let typedArg_pp ppf (name,ttype) =
   fprintf ppf "%s:%a" name  typedecl_pp ttype
@@ -147,16 +151,16 @@ let req_type_pp = function
 
 let require_validity_pp ppf require_valids = 
   CCFormat.(list ~sep:(return "@,") (fun fmt expr -> 
-  fprintf fmt "<1 2>@[<v>valid when %a@]" 
-  expr_pp expr)) ppf require_valids
- 
+      fprintf fmt "<1 2>@[<v>valid when %a@]" 
+        expr_pp expr)) ppf require_valids
+
 let require_pp ppf req = 
   fprintf ppf "%s %s %a" (req_type_pp req.optionality) req.name require_validity_pp req.validity
 
 let require_list_pp ppf requires = 
-   CCFormat.(list ~sep:(return "@,") (fun fmt req -> 
-  fprintf fmt "%a" 
-  require_pp req)) ppf requires
+  CCFormat.(list ~sep:(return "@,") (fun fmt req -> 
+      fprintf fmt "%a" 
+        require_pp req)) ppf requires
 
 let model_statement_pp ppf =
   function
@@ -183,10 +187,10 @@ let model_statement_pp ppf =
     fprintf ppf "@[<v>declare message %s \"%s\" {@;<1 2>@[<v>%a@]@,}@]" name tag field_list_pp fields
   | Message {name; outbound; requires;validators} -> 
     fprintf ppf "@[<v>%a message %s {@;<1 2>@[<v>%a@,%a@]@,}@]" 
-    outbound_pp outbound name require_list_pp requires validator_list_pp validators 
+      outbound_pp outbound name require_list_pp requires validator_list_pp validators 
   | RepeatingGroup {name; requires} -> 
     fprintf ppf "@[<v>repeatingGroup %s {@;<1 2>@[<v>%a@]@,}@]" 
-    name require_list_pp requires
+      name require_list_pp requires
 
 let program_pp ppf =
   fprintf ppf "@[<v>%a@]@." CCFormat.(list ~sep:(return "@,@,") model_statement_pp)

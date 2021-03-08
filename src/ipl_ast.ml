@@ -94,7 +94,7 @@ type model_statement =
   | TypeAlias       of { name : string ; atype  : typedecl }
   | Action          of { name : string ; fields : field list ; validators : expr list }
   | Record          of { name : string ; repeating: bool; fields : field list  } 
-  | Enum            of { name : string ; cases  : string list }
+  | Enum            of { name : string ; cases  : (string * string option) list }
   | InternalDecl    of { name : string ; fields : internal_field list }
   | Receive         of { action : string ; action_var : string ; body : statement list}
   | Function        of { name : string; args: (string * typedecl) list; returnType:typedecl; body: statement list}
