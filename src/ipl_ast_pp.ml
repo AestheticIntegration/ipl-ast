@@ -17,8 +17,8 @@ let rec expr_pp ppf =
   | FuncCall {name;args} -> fprintf ppf "%s(%a)" name CCFormat.(list ~sep:(return ",") expr_pp) args
   | UnaryMinus  x -> fprintf ppf    "(-(%a))" expr_pp x
   | Cond x -> fprintf ppf "if %a then %a else %a" expr_pp x.test expr_pp x.expr expr_pp x.orelse 
-  | None   -> fprintf ppf "None"
-  | Some x -> fprintf ppf "Some(%a)" expr_pp x
+  | IplNone   -> fprintf ppf "None"
+  | IplSome x -> fprintf ppf "Some(%a)" expr_pp x
   | OptCase { value ; capture ; some ; none } ->
     fprintf ppf "case(%a){Some %s:%a}{Node: %a}" expr_pp value capture expr_pp some expr_pp none
   | ListLiteral  x -> fprintf ppf  "[@[<hov>%a@]]"  ( comma_separated expr_pp ) x

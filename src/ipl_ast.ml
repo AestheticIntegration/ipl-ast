@@ -17,8 +17,8 @@ type expr =
   | Abs         of expr
   | FuncCall    of { name: string; args : expr list}
   (** Option stuff *)
-  | None
-  | Some        of expr
+  | IplNone
+  | IplSome        of expr
   | OptCase     of { value : expr ; capture : string ; some : expr ; none : expr }
   (** List/Set/Map *)
   | ListLiteral of expr list 
