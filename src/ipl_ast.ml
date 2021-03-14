@@ -90,13 +90,16 @@ type require = {
   validity: expr list
 }
 
+type case_decl = 
+  string * string option 
+
 type model_statement =
   | Library         of string
   | Import          of string
   | TypeAlias       of { name : string ; atype  : typedecl }
   | Action          of { name : string ; fields : field list ; validators : expr list }
   | Record          of { name : string ; repeating: bool; fields : field list  } 
-  | Enum            of { name : string ; cases  : (string * string option) list }
+  | Enum            of { name : string ; cases  : case_decl list }
   | InternalDecl    of { name : string ; fields : internal_field list }
   | Receive         of { action : string ; action_var : string ; body : statement list}
   | Function        of { name : string; args: (string * typedecl) list; returnType:typedecl; body: statement list}

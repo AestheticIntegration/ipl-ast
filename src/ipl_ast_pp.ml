@@ -1,5 +1,6 @@
 open Ipl_ast;;
 open Format;;
+open Ipl_name_perturber;;
 
 let comma_separated ppf = 
   CCFormat.(list ~sep:(return ",@,") ppf)
@@ -125,12 +126,21 @@ let validator_pp ppf x =
 let validator_list_pp ppf x =
   CCFormat.(list ~sep:(return "@,") validator_pp) ppf x
 
-let case_list_pp ppf (x : (string * string option) list) =
+(* extend this to all artifacts - here for cases only *)
+let case_list_pp ppf (x : case_decl list) =
   CCFormat.(list ~sep:(return "@,") 
               (fun fmt ((n,tg):string * string option) -> 
-                 match tg with 
-                 | None -> fprintf fmt "%s" n
-                 | Some tg -> fprintf fmt "%s \"%s\"" n tg)) ppf x
+                 let pn = perturb_ipl_name n in 
+                 if (n=pn) then 
+                   match tg with 
+                   | None -> fprintf fmt "%s" n
+                   | Some tg -> fprintf fmt "%s \"%s\"" n tg
+
+                 else 
+                   match tg with 
+                   | None -> fprintf fmt "%s" n
+                   | Some tg -> fprintf fmt "%s \"%s\" @@docName(\"%s\")" pn tg n)) ppf x
+;;
 
 let typedArg_pp ppf (name,ttype) =
   fprintf ppf "%s:%a" name  typedecl_pp ttype
