@@ -234,7 +234,7 @@ let model_statement_pp ppf =
   | Import s -> 
     fprintf ppf "import %s" s
   | GlobalAttribute s -> 
-    fprintf ppf "@@@@@@@@@%a" attribute_pp s
+    fprintf ppf "@@@@@%a" attribute_pp s
   | TypeAlias { name ; atype } ->
     fprintf ppf "alias %s: %a" name typedecl_pp atype 
   | Action { name ; fields ; validators } ->
