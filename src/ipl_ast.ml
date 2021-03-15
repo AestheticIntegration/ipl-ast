@@ -62,6 +62,7 @@ type field_assignment = {
 }
 
 type statement =
+  | AssignFrom       of { event: string; state: string}
   | Assign           of { lvalue : value_ref list ; expr : expr }
   | LetDecl          of { name : string ; ltype : typedecl option ; value : expr }
   | If               of { test : expr ; body : statement list ; orelse : statement list }
