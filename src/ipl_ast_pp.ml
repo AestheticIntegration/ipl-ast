@@ -135,8 +135,24 @@ let internal_field_pp ppf x =
   | None ->
     fprintf ppf "%s : %a;" x.name typedecl_pp x.ftype 
 
+let aftype_pp ppf : assignable_field_type -> unit = function 
+  | REQ -> fprintf ppf ":"
+  | OPT -> fprintf ppf ":?"
+  | AMB -> fprintf ppf ":*"
+
+let assignable_field_pp ppf (x:assignable_field) = 
+  match x.initial with 
+  | Some initial ->
+    fprintf ppf "%s : %a = %a;" x.name typedecl_pp x.ftype expr_pp initial
+  | None ->
+    fprintf ppf "%s %a %a" x.name aftype_pp x.opt_type typedecl_pp x.ftype 
+
+
 let internal_field_list_pp ppf ( x : internal_field list ) =
   CCFormat.(list ~sep:(return "@,") internal_field_pp) ppf x
+
+let assignable_field_list_pp ppf ( x : assignable_field list ) =
+  CCFormat.(list ~sep:(return "@,") assignable_field_pp) ppf x
 
 let validator_pp ppf x =
   fprintf ppf "validate {%a}" expr_pp x
@@ -207,7 +223,7 @@ let assignable_pp ppf a =
   match a with 
   | [] -> fprintf ppf "" 
   | _ -> 
-    fprintf ppf "assignable {@;<1 2>@[<v>%a@]@,}" internal_field_list_pp a
+    fprintf ppf "assignable {@;<1 2>@[<v>%a@]@,}" assignable_field_list_pp a
 
 let model_statement_pp ppf =
   function

@@ -81,6 +81,17 @@ type field =
   ; ftype : typedecl
   }
 
+type assignable_field_type = 
+  | REQ | OPT | AMB
+
+type assignable_field = 
+{
+  name    : string
+  ; ftype   : typedecl
+  ; opt_type : assignable_field_type
+  ; initial : expr option 
+}
+
 type internal_field = 
   { name    : string
   ; ftype   : typedecl
@@ -121,7 +132,7 @@ type model_statement =
   | Action          of { name : string ; fields : field list ; validators : expr list }
   | Record          of { name : string ; repeating: bool; fields : field list  } 
   | Enum            of { name : string ; cases  : case_decl list }
-  | InternalDecl    of { name : string ; assignable_fields: internal_field list;internal_fields : internal_field list }
+  | InternalDecl    of { name : string ; assignable_fields: assignable_field list;internal_fields : internal_field list }
   | Receive         of { event : string ; event_var : string ; body : statement list}
   | Function        of { name : string; args: (string * typedecl) list; returnType:typedecl; body: statement list}
   | Scenario        of { name: string; events : string list}
