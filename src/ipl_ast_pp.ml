@@ -129,17 +129,17 @@ let validator_list_pp ppf x =
 (* extend this to all artifacts - here for cases only *)
 let case_list_pp ppf (x : case_decl list) =
   CCFormat.(list ~sep:(return "@,") 
-              (fun fmt ((n,tg):string * string option) -> 
-                 let pn = perturb_ipl_name n in 
-                 if (n=pn) then 
-                   match tg with 
-                   | None -> fprintf fmt "%s" n
-                   | Some tg -> fprintf fmt "%s \"%s\"" n tg
+              (fun fmt {name;tag} -> 
+                 let pn = perturb_ipl_name name in 
+                 if (name=pn) then 
+                   match tag with 
+                   | None -> fprintf fmt "%s" name
+                   | Some tag -> fprintf fmt "%s \"%s\"" name tag
 
                  else 
-                   match tg with 
-                   | None -> fprintf fmt "%s" n
-                   | Some tg -> fprintf fmt "%s \"%s\" @@docName(\"%s\")" pn tg n)) ppf x
+                   match tag with 
+                   | None -> fprintf fmt "%s" name
+                   | Some tag -> fprintf fmt "%s \"%s\" @@docName(\"%s\")" pn tag name)) ppf x
 ;;
 
 let typedArg_pp ppf (name,ttype) =
@@ -172,12 +172,27 @@ let require_list_pp ppf requires =
       fprintf fmt "%a" 
         require_pp req)) ppf requires
 
+let attribute_type_pp ppf arg = 
+  match arg with 
+  | String s -> fprintf ppf "\"%s\"" s 
+  | Float f -> fprintf ppf "%f" f
+  | Bool b -> fprintf ppf "%b" b
+  | Int i -> fprintf ppf "%d" i
+
+let attribute_pp ppf a = 
+  match a.args with 
+  | [] -> fprintf ppf "%s" a.name
+  | _ -> fprintf ppf "%s(%a)" a.name CCFormat.(list ~sep:(return " ,") attribute_type_pp) a.args
+;;
+
 let model_statement_pp ppf =
   function
   | Library s -> 
     fprintf ppf "library %s" s
   | Import s -> 
     fprintf ppf "import %s" s
+  | GlobalAttribute s -> 
+    fprintf ppf "@@@%a" attribute_pp s
   | TypeAlias { name ; atype } ->
     fprintf ppf "alias %s: %a" name typedecl_pp atype 
   | Action { name ; fields ; validators } ->

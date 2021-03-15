@@ -90,12 +90,27 @@ type require = {
   validity: expr list
 }
 
-type case_decl = 
-  string * string option 
+type attribute_arg = 
+  | Float of float
+  | String of string
+  | Bool of bool
+  | Int of int
+
+type attribute = {
+  name: string; 
+  args: attribute_arg list
+}
+
+type case_decl = {
+  name : string;
+  tag  : string option
+}
+
 
 type model_statement =
   | Library         of string
   | Import          of string
+  | GlobalAttribute  of attribute
   | TypeAlias       of { name : string ; atype  : typedecl }
   | Action          of { name : string ; fields : field list ; validators : expr list }
   | Record          of { name : string ; repeating: bool; fields : field list  } 
