@@ -61,6 +61,11 @@ let rec typedecl_pp ppf = function
     fprintf ppf "<%a,%a> map" typedecl_pp map_key typedecl_pp map_value
   | Simple s -> fprintf ppf "%s" s
 
+let withs_pp ppf ws = 
+  CCFormat.(list ~sep:(return "@,") 
+              (fun fmt {name;value} -> fprintf fmt "%s = %a;" name expr_pp value)) 
+    ppf ws
+
 
 let rec statement_pp ppf = function
   | Assign  { lvalue ; expr } ->
@@ -90,6 +95,19 @@ let rec statement_pp ppf = function
       | None ->
         fprintf ppf "insert( %a , %a )"
           expr_pp left expr_pp right 
+    end
+  | Send { message; state; _withs} -> 
+    begin
+      match state with 
+      | None -> 
+        fprintf ppf "send %s with {@;<1 2>@[<v>%a@]@,}" message withs_pp _withs
+      | Some state -> 
+        begin
+          match _withs with 
+          | [] -> fprintf ppf "send %s %s" message state
+          | _ -> 
+            fprintf ppf "send %s {%s with @;<1 2>@[<v>%a@]@,}" message state withs_pp _withs
+        end
     end
   | Remove { left ; right } ->
     fprintf ppf "remove(%a,%a)" expr_pp left expr_pp right
@@ -185,6 +203,12 @@ let attribute_pp ppf a =
   | _ -> fprintf ppf "%s(%a)" a.name CCFormat.(list ~sep:(return " ,") attribute_type_pp) a.args
 ;;
 
+let assignable_pp ppf a = 
+  match a with 
+  | [] -> fprintf ppf "" 
+  | _ -> 
+    fprintf ppf "assignable {@;<1 2>@[<v>%a@]@,}" internal_field_list_pp a
+
 let model_statement_pp ppf =
   function
   | Library s -> 
@@ -201,14 +225,14 @@ let model_statement_pp ppf =
   | Record { name ; repeating; fields } ->
     fprintf ppf "@[<v>declare %a record %s {@;<1 2>@[<v>%a@]@,}@]" repeating_pp repeating name field_list_pp fields
   | Enum { name ; cases } ->
-    fprintf ppf "@[<v>enum %s {@;<1 2>@[<v>%a@]@,}@]"   name case_list_pp cases
+    fprintf ppf "@[<v>enum %s {@;<1 2>@[<v>%a@]@,}@]" name case_list_pp cases
   | Scenario {name; events} -> 
     fprintf ppf "@[<v>messageFlows { %s {@;<1 2> @[<v>template [%a]@]@,}@]}" name CCFormat.(list ~sep:(return ",") string_pp) events
-  | InternalDecl { name ; fields } ->
-    fprintf ppf "@[<v>internal %s {@;<1 2> @[<v>%a@]@,}@]" name internal_field_list_pp fields   
-  | Receive { action ; action_var ; body } ->
+  | InternalDecl { name ; assignable_fields; internal_fields } ->
+    fprintf ppf "@[<v>internal %s {@;<1 2> %a @[<v>%a@]@,}@]" name assignable_pp assignable_fields internal_field_list_pp internal_fields   
+  | Receive { event ; event_var ; body } ->
     fprintf ppf "@[<v>receive ( %s : %s ) {@;<1 2>@[<v>%a@]@,}@]" 
-      action_var action statement_list_pp body
+      event_var event statement_list_pp body
   | Function { name; args; returnType; body} ->
     fprintf ppf "@[<v>function %s(%a):%a {@;<1 2>@[<v>%a@]@,}@]" name CCFormat.(list ~sep:(return ",") typedArg_pp)
       args typedecl_pp returnType statement_list_pp body

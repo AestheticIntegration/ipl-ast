@@ -56,6 +56,11 @@ type typedecl =
   | Option of typedecl
   | Simple of string
 
+type field_assignment = {
+  name: string;
+  value: expr
+}
+
 type statement =
   | Assign           of { lvalue : value_ref list ; expr : expr }
   | LetDecl          of { name : string ; ltype : typedecl option ; value : expr }
@@ -63,6 +68,7 @@ type statement =
   | Case             of { case : expr ; none : statement list ; capture : string ; some : statement list }
   | Insert           of { left : expr ; right : expr ; mapValue : expr option}
   | Remove           of { left : expr ; right : expr }
+  | Send             of { message: string; state: string option; _withs: field_assignment list}
   | RangeIteration   of { var : expr; from : expr ; to_ : expr; step : expr; code: statement list}
   | EnumIteration    of { var : expr; enum : typedecl; code: statement list}
   | ReturnStatement  of { ret : expr option}
@@ -115,8 +121,8 @@ type model_statement =
   | Action          of { name : string ; fields : field list ; validators : expr list }
   | Record          of { name : string ; repeating: bool; fields : field list  } 
   | Enum            of { name : string ; cases  : case_decl list }
-  | InternalDecl    of { name : string ; fields : internal_field list }
-  | Receive         of { action : string ; action_var : string ; body : statement list}
+  | InternalDecl    of { name : string ; assignable_fields: internal_field list;internal_fields : internal_field list }
+  | Receive         of { event : string ; event_var : string ; body : statement list}
   | Function        of { name : string; args: (string * typedecl) list; returnType:typedecl; body: statement list}
   | Scenario        of { name: string; events : string list}
   | MessageDeclaration of {name: string; tag:string; fields:field list}
