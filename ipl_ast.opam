@@ -8,7 +8,6 @@ bug-reports: "https://github.com/AestheticIntegration/ipl_ast/issues"
 license: "APACHE-2.0"
 dev-repo: "https://github.com/AestheticIntegration/ipl_ast"
 doc: "https://github.com/AestheticIntegration/ipl_ast"
-available: [ ocaml-version >= "4.05" & < "4.06" ]
 build: [["dune" "build" "-p" name "-j" jobs]]
 depends: [
   "containers"
