@@ -175,7 +175,7 @@ let case_list_pp ppf (x : case_decl list) =
                  else 
                    match tag with 
                    | None -> fprintf fmt "%s" name
-                   | Some tag -> fprintf fmt "%s \"%s\" @@docName(\"%s\")" pn tag name)) ppf x
+                   | Some tag -> fprintf fmt "%s \"%s\" @@@docName(\"%s\")" pn tag name)) ppf x
 ;;
 
 let typedArg_pp ppf (name,ttype) =
