@@ -241,7 +241,7 @@ let model_statement_pp ppf =
     fprintf ppf "@[<v>action %s {@;<1 2>@[<v>%a@,%a@]@,}@]" 
       name field_list_pp fields validator_list_pp validators 
   | Record { name ; repeating; fields } ->
-    fprintf ppf "@[<v>declare %a record %s {@;<1 2>@[<v>%a@]@,}@]" repeating_pp repeating name field_list_pp fields
+    fprintf ppf "@[<v>%a record %s {@;<1 2>@[<v>%a@]@,}@]" repeating_pp repeating name field_list_pp fields
   | Enum { name ; cases } ->
     fprintf ppf "@[<v>enum %s {@;<1 2>@[<v>%a@]@,}@]" name case_list_pp cases
   | Scenario {name; events} -> 
