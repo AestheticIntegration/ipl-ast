@@ -235,6 +235,8 @@ let using_list_pp ppf u =
   | [] -> fprintf ppf ""
   | _ -> fprintf ppf "using @,{@;<1 2>@[<v>%a@]@,}" CCFormat.(list ~sep:(return "@,") using_pp) u
 
+let rejblock_pp ppf header block =
+  fprintf ppf "@[<v>%s: {@;<1 2>@[<v>%a@]@,}@]" header statement_list_pp block
 
 let model_statement_pp ppf =
   function
@@ -262,6 +264,12 @@ let model_statement_pp ppf =
   | Receive { event ; event_var ; body } ->
     fprintf ppf "@[<v>receive ( %s : %s ) {@;<1 2>@[<v>%a@]@,}@]"
       event_var event statement_list_pp body
+  | Reject { event; event_var; reject_info_var; reject_info_type; missing_field ; invalid_field; invalid} ->
+    fprintf ppf  "@[<v>receive ( %s : %s, %s: %s ) {@;<1 2>@[<v>%a@]@,@[<v>%a@]@,@[<v>%a@]}@]"
+      event_var event reject_info_var reject_info_type
+        (fun x y -> rejblock_pp x "missing_field" y) missing_field
+        (fun x y -> rejblock_pp x "invalid_field" y) invalid_field
+        (fun x y -> rejblock_pp x "invalid" y) invalid
   | Function { name; args; returnType; body} ->
     fprintf ppf "@[<v>function %s(%a):%a {@;<1 2>@[<v>%a@]@,}@]" name CCFormat.(list ~sep:(return ",") typedArg_pp)
       args typedecl_pp returnType statement_list_pp body

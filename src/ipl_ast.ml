@@ -141,6 +141,15 @@ type model_statement =
   | Enum            of { name : string ; cases  : case_decl list }
   | InternalDecl    of { name : string ; assignable_fields: assignable_field list;internal_fields : internal_field list }
   | Receive         of { event : string ; event_var : string ; body : statement list}
+  | Reject          of
+  { event : string
+  ; event_var : string
+  ; reject_info_var: string
+  ; reject_info_type: string
+  ; missing_field : statement list
+  ; invalid_field:statement list
+  ; invalid: statement list
+  }
   | Function        of { name : string; args: (string * typedecl) list; returnType:typedecl; body: statement list}
   | Scenario        of { name: string; events : string list}
   | MessageDeclaration of {name: string; tag:string; fields:field list}
