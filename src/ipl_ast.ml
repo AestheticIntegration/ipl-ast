@@ -5,7 +5,7 @@ type expr =
   (** Operators *)
   | Not         of expr
   | UnaryMinus  of expr
-  | Or          of binary_op 
+  | Or          of binary_op
   | And         of binary_op
   | Mul         of binary_op
   | Add         of binary_op
@@ -21,7 +21,7 @@ type expr =
   | IplSome        of expr
   | OptCase     of { value : expr ; capture : string ; some : expr ; none : expr }
   (** List/Set/Map *)
-  | ListLiteral of expr list 
+  | ListLiteral of expr list
   |  SetLiteral of expr list
   |  MapLiteral of { elements : map_element list ; default : expr }
   | Subset      of { left : expr ; right : expr }
@@ -35,7 +35,7 @@ type expr =
   | Field_vals of field_val list
   (** Converters *)
   | ToInt       of expr
-  | ToFloat     of expr 
+  | ToFloat     of expr
   | IntOfString of expr
   | Present     of expr
   | ValueRef    of value_ref list
@@ -45,11 +45,11 @@ and field_val = { field : string ; field_value : expr}
 and value_ref = {
   name: string;
   index:expr option;
-} 
+}
 
 (** IPL Statement *)
 
-type typedecl = 
+type typedecl =
   | Set    of typedecl
   | Map    of { map_key : typedecl ; map_value : typedecl }
   | List   of typedecl
@@ -73,33 +73,33 @@ type statement =
   | RangeIteration   of { var : expr; from : expr ; to_ : expr; step : expr; code: statement list}
   | EnumIteration    of { var : expr; enum : typedecl; code: statement list}
   | ReturnStatement  of { ret : expr option}
-  
+
 (** IPL Model Statement *)
 
-type field = 
+type field =
   { name  : string
   ; tag  : string option
   ; ftype : typedecl
   }
 
-type assignable_field_type = 
+type assignable_field_type =
   | REQ | OPT | AMB
 
-type assignable_field = 
+type assignable_field =
 {
   name    : string
   ; ftype   : typedecl
   ; opt_type : assignable_field_type
-  ; initial : expr option 
+  ; initial : expr option
 }
 
-type internal_field = 
+type internal_field =
   { name    : string
   ; ftype   : typedecl
-  ; initial : expr option 
+  ; initial : expr option
   }
 
-type req_type = 
+type req_type =
   REQ | OPT | IGN
 
 type require = {
@@ -108,14 +108,14 @@ type require = {
   validity: expr list
 }
 
-type attribute_arg = 
+type attribute_arg =
   | Float of float
   | String of string
   | Bool of bool
   | Int of int
 
 type attribute = {
-  name: string; 
+  name: string;
   args: attribute_arg list
 }
 
@@ -124,14 +124,20 @@ type case_decl = {
   tag  : string option
 }
 
+type using_cases =
+{
+  enum  : string
+; cases : string list
+}
 
 type model_statement =
   | Library         of string
   | Import          of string
-  | GlobalAttribute  of attribute
+  | Using           of using_cases list
+  | GlobalAttribute of attribute
   | TypeAlias       of { name : string ; atype  : typedecl }
   | Action          of { name : string ; fields : field list ; validators : expr list }
-  | Record          of { name : string ; repeating: bool; fields : field list  } 
+  | Record          of { name : string ; repeating: bool; fields : field list  }
   | Enum            of { name : string ; cases  : case_decl list }
   | InternalDecl    of { name : string ; assignable_fields: assignable_field list;internal_fields : internal_field list }
   | Receive         of { event : string ; event_var : string ; body : statement list}
