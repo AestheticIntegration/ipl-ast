@@ -1,8 +1,5 @@
 (library
-  (name        ast)
-  (public_name ipl_ast.ast)
-  (wrapped  false)
-  (libraries 
-      containers
-  )
-)
+ (name ast)
+ (public_name ipl_ast.ast)
+ (wrapped false)
+ (libraries containers))
