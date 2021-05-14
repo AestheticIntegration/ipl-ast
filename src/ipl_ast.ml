@@ -107,7 +107,7 @@ type field_assignment =
 
 type statement =
   | AssignFrom of
-      { event : string
+      { event : value_ref list
       ; state : string
       }
   | Assign of
