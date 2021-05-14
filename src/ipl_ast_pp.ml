@@ -208,15 +208,26 @@ let rec statement_pp ppf = function
   | Send { message; state; _withs } ->
     ( match state with
     | None ->
-        fprintf ppf "send %s with {@;<1 2>@[<v>%a@]@,}" message withs_pp _withs
-    | Some state ->
       ( match _withs with
       | [] ->
-          fprintf ppf "send %s %s" message state
+          fprintf ppf "send %a" value_refs_pp message
       | _ ->
           fprintf
             ppf
-            "send %s {%s with @;<1 2>@[<v>%a@]@,}"
+            "send %a with {@;<1 2>@[<v>%a@]@,}"
+            value_refs_pp
+            message
+            withs_pp
+            _withs )
+    | Some state ->
+      ( match _withs with
+      | [] ->
+          fprintf ppf "send %a %s" value_refs_pp message state
+      | _ ->
+          fprintf
+            ppf
+            "send %a {%s with @;<1 2>@[<v>%a@]@,}"
+            value_refs_pp
             message
             state
             withs_pp

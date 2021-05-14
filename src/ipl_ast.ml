@@ -140,7 +140,7 @@ type statement =
       ; right : expr
       }
   | Send of
-      { message : string
+      { message : value_ref list
       ; state : string option
       ; _withs : field_assignment list
       }
