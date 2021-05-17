@@ -507,13 +507,14 @@ let model_statement_pp ppf = function
       } ->
       fprintf
         ppf
-        "@[<v>receive ( %s : %s, %s: %s ) {@;\
+        "@[<v>receive ( %s : %s, %s: %a ) {@;\
          <1 2>@[<v>%a@]@,\
          @[<v>%a@]@,\
          @[<v>%a@]}@]"
         event_var
         event
         reject_info_var
+        typedecl_pp
         reject_info_type
         (fun x y -> rejblock_pp x "missing_field" y)
         missing_field

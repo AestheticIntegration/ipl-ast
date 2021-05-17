@@ -258,7 +258,7 @@ type model_statement =
       { event : string
       ; event_var : string
       ; reject_info_var : string
-      ; reject_info_type : string
+      ; reject_info_type : typedecl
       ; missing_field : statement list
       ; invalid_field : statement list
       ; invalid : statement list
