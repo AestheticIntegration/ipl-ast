@@ -17,6 +17,8 @@ let rec expr_pp ppf = function
       fprintf ppf "abs(%a)" expr_pp x
   | FuncCall { name; args } ->
       fprintf ppf "%s(%a)" name CCFormat.(list ~sep:(return ",") expr_pp) args
+  | CompoundValueRef { name; args } ->
+      fprintf ppf "%s(%a)" name CCFormat.(list ~sep:(return ",") expr_pp) args
   | UnaryMinus x ->
       fprintf ppf "(-(%a))" expr_pp x
   | Cond x ->

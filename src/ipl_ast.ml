@@ -22,6 +22,10 @@ type expr =
       { name : string
       ; args : expr list
       }
+  | CompoundValueRef of
+      { name : string
+      ; args : expr list
+      }
   | StrLen of expr  (** Option stuff *)
   | IplNone
   | IplSome of expr
