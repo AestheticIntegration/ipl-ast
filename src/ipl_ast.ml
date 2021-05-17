@@ -110,6 +110,7 @@ type field_assignment =
   }
 
 type statement =
+  | Break
   | AssignFrom of
       { event : value_ref list
       ; state : string

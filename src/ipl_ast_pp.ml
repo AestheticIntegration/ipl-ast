@@ -152,6 +152,8 @@ let withs_pp ppf ws =
 
 
 let rec statement_pp ppf = function
+  | Break ->
+      fprintf ppf "break"
   | AssignFrom { event; state } ->
       fprintf ppf "assignFrom(%a,%s)" value_refs_pp event state
   | Assign { lvalue; expr } ->
