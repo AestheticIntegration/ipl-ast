@@ -60,6 +60,8 @@ let rec expr_pp ppf = function
         elements
         expr_pp
         default
+  | ExternalFuncCall ->
+      fprintf ppf "true"
   | Subset { left; right } ->
       fprintf ppf "subset(%a,%a)" expr_pp left expr_pp right
   | Get { left; right } ->

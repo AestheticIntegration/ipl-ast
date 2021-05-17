@@ -12,6 +12,7 @@ type expr =
   | Comp of binary_op
   | Implies of binary_op
   | Cont of binary_op
+  | ExternalFuncCall
   | Cond of
       { test : expr
       ; expr : expr
