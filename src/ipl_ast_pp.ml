@@ -86,6 +86,10 @@ let rec expr_pp ppf = function
       fprintf ppf "present(%a)" expr_pp x
   | ValueRef x ->
       fprintf ppf "%a" value_refs_pp x
+  | ToList x ->
+      fprintf ppf "toList(%a)" expr_pp x
+  | OfList x ->
+      fprintf ppf "ofList(%a)" expr_pp x
   | Forall (var, expr) ->
       fprintf ppf "forall(%a,%a)" expr_pp var lambda_expr_pp expr
   | Exists (var, expr) ->

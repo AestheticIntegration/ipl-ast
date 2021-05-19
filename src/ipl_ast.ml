@@ -60,6 +60,8 @@ type expr =
   | IntOfString of expr
   | Present of expr
   | ValueRef of value_ref list
+  | ToList of expr
+  | OfList of expr
   (* Higher order stuff*)
   | Forall of expr * lambda_expr
   | Exists of expr * lambda_expr
