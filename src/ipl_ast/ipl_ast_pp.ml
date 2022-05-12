@@ -152,7 +152,7 @@ let rec typedecl_pp ppf = function
 let withs_pp ppf ws =
   CCFormat.(
     list ~sep:(return "@,") (fun fmt { name; value } ->
-        fprintf fmt "%s = %a;" name expr_pp value))
+        fprintf fmt "%s = %a;" name expr_pp value ))
     ppf
     ws
 
@@ -350,7 +350,7 @@ let case_list_pp ppf (x : case_decl list) =
           | None ->
               fprintf fmt "%s" name
           | Some tag ->
-              fprintf fmt "%s \"%s\" @@@docName(\"%s\")" pn tag name))
+              fprintf fmt "%s \"%s\" @@@docName(\"%s\")" pn tag name ))
     ppf
     x
 
@@ -372,7 +372,7 @@ let req_type_pp = function REQ -> "req" | OPT -> "opt" | IGN -> "ign"
 let require_validity_pp ppf require_valids =
   CCFormat.(
     list ~sep:(return "@,") (fun fmt expr ->
-        fprintf fmt "<1 2>@[<v>valid when %a@]" expr_pp expr))
+        fprintf fmt "<1 2>@[<v>valid when %a@]" expr_pp expr ))
     ppf
     require_valids
 
