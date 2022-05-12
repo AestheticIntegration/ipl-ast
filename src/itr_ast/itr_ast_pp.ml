@@ -24,11 +24,11 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
     | Bool false ->
         fprintf ppf "false"
     | Int i ->
-        fprintf ppf "%i" i
+        fprintf ppf "%s" (Z.to_string i)
     | String s ->
         fprintf ppf "\"%s\"" (CCString.escaped s)
     | Float q ->
-        fprintf ppf "%f" q
+        fprintf ppf "%s" (Q.to_string q)
     | Coll l ->
         fprintf ppf "%a" CCFormat.(list ~sep:(return " ") record_item_pp) l
     | MapColl (d, l) ->

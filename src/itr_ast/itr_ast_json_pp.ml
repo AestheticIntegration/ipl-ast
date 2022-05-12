@@ -25,11 +25,11 @@ module Itr_ast_json_pp (Datetime : Itr_ast.Datetime) = struct
     | Bool b ->
         `Assoc [ ("Bool", `Bool b) ]
     | Int i ->
-        `Assoc [ ("Int", `Int i) ]
+        `Assoc [ ("Int", `String (Z.to_string i)) ]
     | String s ->
         `Assoc [ ("String", `String (sprintf "\"%s\"" s)) ]
     | Float q ->
-        `Assoc [ ("Float", `Float q) ]
+        `Assoc [ ("Float", `String (Q.to_string q)) ]
     | Coll l ->
         `Assoc [ ("Coll", `List (List.map record_item_to_json l)) ]
     | MapColl (d, l) ->

@@ -50,16 +50,16 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
             let+ b = bool in
             I.Bool b
         | "Int" ->
-            let+ i = int in
-            I.Int i
+            let+ i = string in
+            I.Int (Z.of_string i)
         | "String" ->
             let+ s = string in
             if CCString.length s > 2
             then I.String (CCString.sub s 1 (CCString.length s - 2))
             else String ""
         | "Float" ->
-            let+ q = float in
-            I.Float q
+            let+ q = string in
+            I.Float (Q.of_string q)
         | "Coll" ->
             let+ c =
               list

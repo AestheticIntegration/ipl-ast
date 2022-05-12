@@ -185,9 +185,9 @@ module Itr_ast (Datetime : Datetime) = struct
 
   type literal =
     | Bool of bool
-    | Int of int
+    | Int of Z.t
     | String of string
-    | Float of float
+    | Float of Q.t
     | Coll of record_item list
     | MapColl of record_item * (record_item * record_item) list
     | LiteralNone

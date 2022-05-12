@@ -166,9 +166,9 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
       | Value (Literal (Float l)), Value (Literal (Float r)) ->
           if l < r then e_true else e_false
       | Value (Literal (Int l)), Value (Literal (Float r)) ->
-          if float_of_int l < r then e_true else e_false
+          if Q.of_bigint l < r then e_true else e_false
       | Value (Literal (Float l)), Value (Literal (Int r)) ->
-          if l < float_of_int r then e_true else e_false
+          if l < Q.of_bigint r then e_true else e_false
       | ( Value (Literal (Datetime (UTCTimestamp l)))
         , Value (Literal (Datetime (UTCTimestamp r))) ) ->
           if Datetime.utctimestamp_LessThan l r then e_true else e_false
@@ -193,9 +193,9 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
       | Value (Literal (Float l)), Value (Literal (Float r)) ->
           if l > r then e_true else e_false
       | Value (Literal (Int l)), Value (Literal (Float r)) ->
-          if float_of_int l > r then e_true else e_false
+          if Q.of_bigint l > r then e_true else e_false
       | Value (Literal (Float l)), Value (Literal (Int r)) ->
-          if l > float_of_int r then e_true else e_false
+          if l > Q.of_bigint r then e_true else e_false
       | ( Value (Literal (Datetime (UTCTimestamp l)))
         , Value (Literal (Datetime (UTCTimestamp r))) ) ->
           if Datetime.utctimestamp_GreaterThan l r then e_true else e_false
@@ -220,9 +220,9 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
       | Value (Literal (Float l)), Value (Literal (Float r)) ->
           if l <= r then e_true else e_false
       | Value (Literal (Int l)), Value (Literal (Float r)) ->
-          if float_of_int l <= r then e_true else e_false
+          if Q.of_bigint l <= r then e_true else e_false
       | Value (Literal (Float l)), Value (Literal (Int r)) ->
-          if l <= float_of_int r then e_true else e_false
+          if l <= Q.of_bigint r then e_true else e_false
       | ( Value (Literal (Datetime (UTCTimestamp l)))
         , Value (Literal (Datetime (UTCTimestamp r))) ) ->
           if Datetime.utctimestamp_LessThanEqual l r then e_true else e_false
@@ -247,9 +247,9 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
       | Value (Literal (Float l)), Value (Literal (Float r)) ->
           if l >= r then e_true else e_false
       | Value (Literal (Int l)), Value (Literal (Float r)) ->
-          if float_of_int l >= r then e_true else e_false
+          if Q.of_bigint l >= r then e_true else e_false
       | Value (Literal (Float l)), Value (Literal (Int r)) ->
-          if l >= float_of_int r then e_true else e_false
+          if l >= Q.of_bigint r then e_true else e_false
       | ( Value (Literal (Datetime (UTCTimestamp l)))
         , Value (Literal (Datetime (UTCTimestamp r))) ) ->
           if Datetime.utctimestamp_GreaterThanEqual l r then e_true else e_false
@@ -503,7 +503,7 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
       | [ a ] ->
         ( match evaluate_record_item a with
         | Rec_value (Value (Literal (String s))) ->
-            Rec_value (Value (Literal (Int (String.length s))))
+            Rec_value (Value (Literal (Int (Z.of_int (CCString.length s)))))
         | _ ->
             Rec_value e )
       | _ ->
@@ -515,7 +515,7 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
       | [ a ] ->
         ( match evaluate_record_item a with
         | Rec_value (Value (Literal (String s))) ->
-            Rec_value (Value (Literal (Int (String.length s))))
+            Rec_value (Value (Literal (Int (Z.of_int (String.length s)))))
         | _ ->
             Rec_value e )
       | _ ->
@@ -677,7 +677,7 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
         ( match (evaluate_record_item l, evaluate_record_item u) with
         | ( Rec_value (Value (Literal (Int l)))
           , Rec_value (Value (Literal (Int u))) ) ->
-            let r = Random.int (u - l) + l in
+            let r = Z.(of_int (Random.int Z.(to_int (u - l))) + l) in
             Rec_value (Value (Literal (Int r)))
         | _ ->
             Rec_value e )
@@ -723,31 +723,31 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
         | Rec_value lhs, Rec_value rhs ->
           ( match (lhs, op, rhs) with
           | Value (Literal (Int a)), '+', Value (Literal (Int b)) ->
-              Rec_value (Value (Literal (Int (a + b))))
+              Rec_value (Value (Literal (Int Z.(a + b))))
           | Value (Literal (Float a)), '+', Value (Literal (Float b)) ->
-              Rec_value (Value (Literal (Float (a +. b))))
+              Rec_value (Value (Literal (Float Q.(a + b))))
           | Value (Literal (Float a)), '+', Value (Literal (Int b)) ->
-              Rec_value (Value (Literal (Float (a +. float_of_int b))))
+              Rec_value (Value (Literal (Float Q.(a + of_bigint b))))
           | Value (Literal (Int a)), '+', Value (Literal (Float b)) ->
-              Rec_value (Value (Literal (Float (float_of_int a +. b))))
+              Rec_value (Value (Literal (Float Q.(of_bigint a + b))))
           | Value (Literal (Int a)), '-', Value (Literal (Int b)) ->
-              Rec_value (Value (Literal (Int (a - b))))
+              Rec_value (Value (Literal (Int Z.(a - b))))
           | Value (Literal (Float a)), '-', Value (Literal (Float b)) ->
-              Rec_value (Value (Literal (Float (a -. b))))
+              Rec_value (Value (Literal (Float Q.(a - b))))
           | Value (Literal (Float a)), '-', Value (Literal (Int b)) ->
-              Rec_value (Value (Literal (Float (a -. float_of_int b))))
+              Rec_value (Value (Literal (Float Q.(a - of_bigint b))))
           | Value (Literal (Int a)), '-', Value (Literal (Float b)) ->
-              Rec_value (Value (Literal (Float (float_of_int a -. b))))
+              Rec_value (Value (Literal (Float Q.(of_bigint a - b))))
           | Value (Literal (String a)), '+', Value (Literal (String b)) ->
               Rec_value (Value (Literal (String (a ^ b))))
           | Value (Literal (String a)), '+', Value (Literal (Int b)) ->
-              Rec_value (Value (Literal (String (a ^ string_of_int b))))
+              Rec_value (Value (Literal (String (a ^ Z.to_string b))))
           | Value (Literal (Int a)), '+', Value (Literal (String b)) ->
-              Rec_value (Value (Literal (String (string_of_int a ^ b))))
+              Rec_value (Value (Literal (String (Z.to_string a ^ b))))
           | Value (Literal (String a)), '+', Value (Literal (Float b)) ->
-              Rec_value (Value (Literal (String (a ^ string_of_float b))))
+              Rec_value (Value (Literal (String (a ^ Q.to_string b))))
           | Value (Literal (Float a)), '+', Value (Literal (String b)) ->
-              Rec_value (Value (Literal (String (string_of_float a ^ b))))
+              Rec_value (Value (Literal (String (Q.to_string a ^ b))))
           | _, '+', _ | _, '-', _ ->
               Rec_value e
           | _, _, _ ->
@@ -760,22 +760,21 @@ module Itr_ast_pp (Datetime : Itr_ast.Datetime) = struct
         | Rec_value lhs, Rec_value rhs ->
           ( match (lhs, op, rhs) with
           | Value (Literal (Int a)), '*', Value (Literal (Int b)) ->
-              Rec_value (Value (Literal (Int (a * b))))
+              Rec_value (Value (Literal (Int Z.(a * b))))
           | Value (Literal (Float a)), '*', Value (Literal (Float b)) ->
-              Rec_value (Value (Literal (Float (a *. b))))
+              Rec_value (Value (Literal (Float Q.(a * b))))
           | Value (Literal (Float a)), '*', Value (Literal (Int b)) ->
-              Rec_value (Value (Literal (Float (a *. float_of_int b))))
+              Rec_value (Value (Literal (Float Q.(a * of_bigint b))))
           | Value (Literal (Int a)), '*', Value (Literal (Float b)) ->
-              Rec_value (Value (Literal (Float (float_of_int a *. b))))
+              Rec_value (Value (Literal (Float Q.(of_bigint a * b))))
           | Value (Literal (Int a)), '/', Value (Literal (Int b)) ->
-              Rec_value
-                (Value (Literal (Float (float_of_int a /. float_of_int b))))
+              Rec_value (Value (Literal (Float Q.(of_bigint a / of_bigint b))))
           | Value (Literal (Float a)), '/', Value (Literal (Float b)) ->
-              Rec_value (Value (Literal (Float (a /. b))))
+              Rec_value (Value (Literal (Float Q.(a / b))))
           | Value (Literal (Float a)), '/', Value (Literal (Int b)) ->
-              Rec_value (Value (Literal (Float (a /. float_of_int b))))
+              Rec_value (Value (Literal (Float Q.(a / of_bigint b))))
           | Value (Literal (Int a)), '/', Value (Literal (Float b)) ->
-              Rec_value (Value (Literal (Float (float_of_int a /. b))))
+              Rec_value (Value (Literal (Float Q.(of_bigint a / b))))
           | _, '+', _ | _, '-', _ ->
               Rec_value e
           | _, _, _ ->
